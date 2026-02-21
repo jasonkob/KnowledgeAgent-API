@@ -1,6 +1,7 @@
 "use client";
 
-import { Database, Key, PlayCircle, FileText, MessageSquare, Layers } from "lucide-react";
+import Link from "next/link";
+import { Database, Key, PlayCircle, FileText, MessageSquare, Layers, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
@@ -8,12 +9,18 @@ interface HeaderProps {
   onTabChange: (tab: string) => void;
 }
 
-const navItems = [
+const navItems: Array<
+  { id: string; label: string; icon: React.ComponentType<{ className?: string }> } & (
+    | { href?: undefined }
+    | { href: string }
+  )
+> = [
   { id: "pipeline", label: "New Pipeline", icon: PlayCircle },
   { id: "history", label: "History", icon: FileText },
   { id: "collections", label: "Collections", icon: Layers },
   { id: "chat", label: "Chat", icon: MessageSquare },
   { id: "keys", label: "API Keys", icon: Key },
+  { id: "pricing", label: "Pricing", icon: Tag, href: "/pricing" },
   { id: "docs", label: "API Docs", icon: Database },
 ];
 
@@ -33,21 +40,34 @@ export function Header({ activeTab, onTabChange }: HeaderProps) {
         </div>
 
         <nav className="flex items-center gap-1 overflow-x-auto max-w-full whitespace-nowrap">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => onTabChange(item.id)}
-              className={cn(
-                "shrink-0 flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors",
-                activeTab === item.id
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              <span className="sr-only sm:not-sr-only">{item.label}</span>
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const className = cn(
+              "shrink-0 flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors",
+              activeTab === item.id
+                ? "bg-accent text-accent-foreground"
+                : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+            );
+
+            if ("href" in item && item.href) {
+              return (
+                <Link key={item.id} href={item.href} className={className}>
+                  <item.icon className="h-4 w-4" />
+                  <span className="sr-only sm:not-sr-only">{item.label}</span>
+                </Link>
+              );
+            }
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => onTabChange(item.id)}
+                className={className}
+              >
+                <item.icon className="h-4 w-4" />
+                <span className="sr-only sm:not-sr-only">{item.label}</span>
+              </button>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">
