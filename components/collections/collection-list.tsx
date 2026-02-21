@@ -122,7 +122,7 @@ export function CollectionList({ onSelectJob }: CollectionListProps) {
           {/* Collection Header */}
           <button
             onClick={() => handleExpand(col.name)}
-            className="w-full flex items-center gap-4 p-4 hover:bg-accent/30 transition-colors text-left"
+            className="w-full flex items-center gap-4 p-3 sm:p-4 hover:bg-accent/30 transition-colors text-left"
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
               <Database className="h-5 w-5 text-primary" />
@@ -152,7 +152,7 @@ export function CollectionList({ onSelectJob }: CollectionListProps) {
 
           {/* Expanded detail */}
           {expandedCol === col.name && (
-            <div className="border-t border-border bg-surface/50 p-4 space-y-4">
+            <div className="border-t border-border bg-surface/50 p-3 sm:p-4 space-y-4">
               {/* Ingest command */}
               <div>
                 <div className="flex items-center justify-between mb-2">

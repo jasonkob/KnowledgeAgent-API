@@ -48,12 +48,13 @@ export function StageDetail({ stage }: StageDetailProps) {
             </p>
           ) : (
             stage.logs.map((log, i) => (
-              <div key={i} className="flex gap-2 text-xs font-mono">
+              <div key={i} className="flex gap-2 text-xs font-mono min-w-0">
                 <span className="text-muted-foreground shrink-0 w-[75px]">
                   {new Date(log.timestamp).toLocaleTimeString()}
                 </span>
                 <span
                   className={cn(
+                    "min-w-0 break-words whitespace-pre-wrap",
                     log.level === "error" && "text-destructive",
                     log.level === "warn" && "text-warning",
                     log.level === "info" && "text-foreground"

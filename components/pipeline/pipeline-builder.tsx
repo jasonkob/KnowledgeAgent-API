@@ -217,7 +217,7 @@ export function PipelineBuilder({ onJobCreated }: PipelineBuilderProps) {
             {/* Chunking Strategy */}
             <div className="space-y-2">
               <Label className="text-foreground text-xs">Chunking Strategy</Label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {CHUNKING_STRATEGIES.map((s) => (
                   <button
                     key={s.value}

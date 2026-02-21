@@ -79,7 +79,7 @@ export function PipelineList({ onSelectJob, refreshTrigger }: PipelineListProps)
           <button
             key={job.id}
             onClick={() => onSelectJob(job.id)}
-            className="w-full flex items-center gap-4 p-4 rounded-lg border border-border bg-card hover:bg-accent/30 transition-colors text-left"
+            className="w-full flex items-center gap-4 p-3 sm:p-4 rounded-lg border border-border bg-card hover:bg-accent/30 transition-colors text-left"
           >
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">

@@ -148,7 +148,7 @@ export function ApiKeyManager() {
               className="rounded-lg border border-border bg-card overflow-hidden"
             >
               {/* Header row */}
-              <div className="flex items-center justify-between p-4 border-b border-border">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 border-b border-border">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 shrink-0">
                     <Key className="h-4 w-4 text-primary" />
@@ -185,7 +185,7 @@ export function ApiKeyManager() {
                     API Key
                   </p>
                   <div className="flex items-center gap-2">
-                    <code className="flex-1 text-xs font-mono text-foreground bg-surface rounded-md px-3 py-2 overflow-hidden border border-border">
+                    <code className="flex-1 text-xs font-mono text-foreground bg-surface rounded-md px-3 py-2 overflow-x-auto whitespace-nowrap border border-border">
                       {revealed || k.maskedKey}
                     </code>
                     <Button

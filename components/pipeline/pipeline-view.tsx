@@ -89,16 +89,16 @@ export function PipelineView({ jobId, onBack }: PipelineViewProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-3 min-w-0">
           <Button variant="ghost" size="sm" onClick={onBack} className="text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4 mr-1" />
             Back
           </Button>
           <div className="h-4 w-px bg-border" />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <FileText className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-foreground">
+            <span className="text-sm font-medium text-foreground truncate">
               {job.files && job.files.length > 1
                 ? `${job.files.length} files`
                 : job.fileName}
@@ -111,7 +111,7 @@ export function PipelineView({ jobId, onBack }: PipelineViewProps) {
           </div>
           <Badge
             className={cn(
-              "text-xs",
+              "text-xs shrink-0",
               job.status === "completed" && "bg-success text-success-foreground",
               job.status === "running" && "bg-info text-info-foreground",
               job.status === "failed" && "bg-destructive text-destructive-foreground",
@@ -121,14 +121,14 @@ export function PipelineView({ jobId, onBack }: PipelineViewProps) {
             {job.status}
           </Badge>
         </div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground shrink-0">
           <Clock className="h-3.5 w-3.5" />
           <span className="font-mono">{duration}s</span>
         </div>
       </div>
 
       {/* Pipeline Stages - Jenkins-like horizontal flow */}
-      <div className="rounded-xl border border-border bg-card p-6">
+      <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
         <div className="flex items-center justify-center overflow-x-auto pb-2">
           {job.stages.map((stage, i) => (
             <StageNode
@@ -141,27 +141,21 @@ export function PipelineView({ jobId, onBack }: PipelineViewProps) {
           ))}
         </div>
 
-        {/* Progress bar */}
-        <div className="mt-4 h-1.5 rounded-full bg-secondary overflow-hidden">
-          <div
-            className={cn(
-              "h-full rounded-full transition-all duration-500",
-              job.status === "completed"
-                ? "bg-success"
-                : job.status === "failed"
-                ? "bg-destructive"
-                : "bg-info"
-            )}
-            style={{
-              width: `${
-                (job.stages.filter(
-                  (s) => s.status === "success" || s.status === "error"
-                ).length /
-                  job.stages.length) *
-                100
-              }%`,
-            }}
-          />
+        {/* Progress bar (segmented) */}
+        <div className="mt-4 flex gap-1">
+          {job.stages.map((stage) => (
+            <div
+              key={stage.name}
+              className={cn(
+                "h-1.5 flex-1 rounded-full transition-colors",
+                stage.status === "success" && "bg-success",
+                stage.status === "error" && "bg-destructive",
+                stage.status === "running" && "bg-info animate-pulse",
+                stage.status === "skipped" && "bg-muted",
+                stage.status === "idle" && "bg-border"
+              )}
+            />
+          ))}
         </div>
       </div>
 
@@ -187,7 +181,7 @@ export function PipelineView({ jobId, onBack }: PipelineViewProps) {
               <div
                 key={`${f.name}-${i}`}
                 className={cn(
-                  "flex items-center justify-between text-xs rounded px-2 py-1.5",
+                  "flex items-center justify-between text-xs rounded px-2 py-1.5 min-w-0",
                   job.status === "running" && i === (job.currentFileIndex ?? 0)
                     ? "bg-info/10 text-info"
                     : i < (job.currentFileIndex ?? 0)
@@ -195,7 +189,7 @@ export function PipelineView({ jobId, onBack }: PipelineViewProps) {
                     : "text-muted-foreground"
                 )}
               >
-                <span className="font-mono truncate flex items-center gap-2">
+                <span className="font-mono truncate flex items-center gap-2 min-w-0">
                   {job.status === "running" && i === (job.currentFileIndex ?? 0) && (
                     <span className="h-2 w-2 rounded-full bg-info animate-pulse shrink-0" />
                   )}
@@ -218,33 +212,33 @@ export function PipelineView({ jobId, onBack }: PipelineViewProps) {
         <p className="text-xs font-medium text-muted-foreground mb-2">
           Configuration
         </p>
-        <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
-          <div className="flex justify-between">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs">
+          <div className="flex justify-between gap-3 min-w-0">
             <span className="text-muted-foreground">Embedding</span>
-            <span className="text-foreground font-mono">
+            <span className="text-foreground font-mono truncate">
               {job.config.embedding.provider}/{job.config.embedding.model}
             </span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-3 min-w-0">
             <span className="text-muted-foreground">Collection</span>
-            <span className="text-foreground font-mono">
+            <span className="text-foreground font-mono truncate">
               {job.config.collectionName}
             </span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-3 min-w-0">
             <span className="text-muted-foreground">Chunk Size</span>
-            <span className="text-foreground font-mono">
+            <span className="text-foreground font-mono truncate">
               {job.config.chunkSize}
             </span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-3 min-w-0">
             <span className="text-muted-foreground">Overlap</span>
-            <span className="text-foreground font-mono">
+            <span className="text-foreground font-mono truncate">
               {job.config.chunkOverlap}
             </span>
           </div>
           {job.config.systemPrompt && (
-            <div className="col-span-2 pt-1">
+            <div className="sm:col-span-2 pt-1">
               <span className="text-muted-foreground">System Prompt</span>
               <p className="text-foreground font-mono text-[11px] mt-0.5 leading-relaxed line-clamp-3">
                 {job.config.systemPrompt}

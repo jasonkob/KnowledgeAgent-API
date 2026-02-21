@@ -34,7 +34,7 @@ export function RagChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showConfig, setShowConfig] = useState(true);
+  const [showConfig, setShowConfig] = useState(false);
   const [expandedSources, setExpandedSources] = useState<number | null>(null);
   const [collections, setCollections] = useState<CollectionOption[]>([]);
   const [loadingCollections, setLoadingCollections] = useState(true);
@@ -138,9 +138,9 @@ export function RagChat() {
   }, [input, isLoading, collectionName, messages, topK]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 h-[calc(100vh-180px)]">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 h-[calc(100vh-180px)] min-h-0">
       {/* Chat Area */}
-      <div className="flex flex-col rounded-lg border border-border bg-card overflow-hidden">
+      <div className={`flex flex-col rounded-lg border border-border bg-card overflow-hidden min-h-0 ${showConfig ? "hidden lg:flex" : ""}`}>
         {/* Chat Header */}
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <div className="flex items-center gap-2">
@@ -266,7 +266,7 @@ export function RagChat() {
       </div>
 
       {/* Config Panel */}
-      <div className={`${showConfig ? "block" : "hidden lg:block"} space-y-4`}>
+      <div className={`${showConfig ? "block" : "hidden lg:block"} space-y-4 min-h-0 overflow-auto`}>
         <div className="rounded-lg border border-border bg-card p-4 space-y-4">
           <h3 className="text-sm font-medium text-foreground flex items-center gap-2">
             <Settings2 className="h-4 w-4 text-primary" />
