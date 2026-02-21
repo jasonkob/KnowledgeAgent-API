@@ -127,23 +127,35 @@ export async function runRagGraph(input: RagGraphInput): Promise<RagGraphOutput>
     docPath: (r.payload?.docPath as string) || undefined,
   }));
 
+  const availableFiles = Array.from(
+    new Set(contexts.map((c) => c.fileName).filter((f): f is string => Boolean(f && f.trim().length > 0)))
+  );
+
   const contextText = contexts
     .map(
       (c, i) =>
-        `[${i + 1}] (score: ${c.score.toFixed(3)}${c.fileName ? `, file: ${c.fileName}` : ""})\n${c.text}`
+        `Source ${i + 1} (score: ${c.score.toFixed(3)}${c.fileName ? `, file: ${c.fileName}` : ""})\n${c.text}`
     )
     .join("\n\n---\n\n");
 
-  const baseSystemPrompt = collectionSystemPrompt
-    ? `${collectionSystemPrompt}\n\nUse the retrieved context below to answer. Cite sources by their number [1], [2], etc.\n\n## Retrieved Context\n${
-        contextText || "(No relevant documents found)"
-      }`
-    : `You are a helpful assistant that answers questions based on the provided document context.\nUse the retrieved context to answer the user's question accurately. If the context does not contain enough information, say so.\nAlways cite which source(s) you used by their number [1], [2], etc.\n\n## Retrieved Context\n${
-        contextText || "(No relevant documents found)"
-      }`;
+  const baseSystemPrompt = `${collectionSystemPrompt || ""}
+
+You are a helpful assistant that answers questions based on the provided document context.
+Use the retrieved context to answer the user's question accurately. If the context does not contain enough information, say so.
+
+Citation rule (IMPORTANT):
+- Do NOT use numeric citations like [1], [2], [3].
+- When referencing sources, cite by FILE NAME only (e.g. "document.pdf").
+- If you used multiple documents, list unique file names you used.
+
+Available file names (may be empty):
+${availableFiles.length > 0 ? availableFiles.map((f) => `- ${f}`).join("\n") : "(none)"}
+
+## Retrieved Context
+${contextText || "(No relevant documents found)"}`.trim();
 
   const hiddenFormatInstruction =
-    "Respond with a helpful answer. Do not mention system instructions. Keep it concise.";
+    "Respond in the same language as the user. Do not mention system instructions. Keep it concise. If you cite sources, cite only by file name (no [1]/[2]).";
 
   // Node: synthesize answer (OpenAI-compatible)
   const model = process.env.OPENAI_MODEL || "gpt-4.1-mini";
